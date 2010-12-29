@@ -39,7 +39,10 @@ module FakeFS
       raise IOError, "closed directory" if @pointer == nil
       n = @contents[@pointer]
       @pointer += 1
-      n.to_s.gsub(path + '/', '') if n
+      if n
+        n.to_s =~ /^([A-Za-z]\:)/ 
+        n.to_s.gsub("#{$1}#{path}/", '') 
+      end
     end
 
     def rewind

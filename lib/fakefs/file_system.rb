@@ -21,7 +21,9 @@ module FakeFS
 
     def find(path)
       parts = path_parts(normalize_path(path))
-      return fs if parts.empty? # '/'
+      if parts.empty? || (parts.size == 1 && parts.first =~ /[A-Za-z]\:/)
+        return fs
+      end
 
       entries = find_recurser(fs, parts).flatten
 

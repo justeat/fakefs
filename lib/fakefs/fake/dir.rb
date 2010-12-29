@@ -14,6 +14,12 @@ module FakeFS
       self
     end
 
+    alias_method :old_access, :[]
+
+    def [](key)
+     old_access(key) || first.last.old_access(key) rescue nil
+    end
+
     def inspect
       "(FakeDir name:#{name.inspect} parent:#{parent.to_s.inspect} size:#{size})"
     end
@@ -31,7 +37,11 @@ module FakeFS
       if parent && parent.to_s != '.'
         File.join(parent.to_s, name)
       elsif parent && parent.to_s == '.'
-        "#{File::PATH_SEPARATOR}#{name}"
+        if name =~ /[A-Za-z]\:/
+          name
+        else
+          "#{File::PATH_SEPARATOR}#{name}"
+        end
       else
         name
       end
