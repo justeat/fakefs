@@ -86,6 +86,12 @@ module FakeFS
       block_given? ? files.each { |file| block.call(file) } : files
     end
 
+    if Gem::Version.new(RUBY_VERSION.dup) >= Gem::Version.new('1.9')
+      def self.home(user = nil)
+        RealDir.home(user)
+      end
+    end
+
     def self.mkdir(string, integer = 0)
       parent = string.split('/')
       parent.pop
